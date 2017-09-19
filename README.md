@@ -8,4 +8,4 @@
 <br />	pod 'ReactiveCocoa','2.5'
 <br />
 
-![image](https://github.com/tx972978732/TXMapView/screenshot.png)
+![image](https://github.com/tx972978732/TXMapView/blob/master/screenshot.png)
