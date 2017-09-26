@@ -51,4 +51,7 @@
 
 - (NSDictionary *)getLocationSignalOnce;//获取一次定位值（自动管理定位启动，获取一次后自动关闭定位）
 - (NSDictionary *)getHeadingSignalOnce;//获取一次方向值（自动管理定位启动，获取一次后自动关闭定位）
+
+//**helper methods 其他辅助方法
+- (double)distanceFromLocation:(NSDictionary*)from toLocation:(NSDictionary*)to;//计算两个经纬度的距离,from传空时以当前定位经纬度为起始点,返回结果单位为公里(km)
 @end

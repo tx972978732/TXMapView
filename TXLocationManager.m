@@ -187,7 +187,7 @@ static TXLocationManager *locationManager = nil;
     CLLocation *location = locations.lastObject;
     [self.locationDic setObject:[NSString stringWithFormat:@"%f",location.coordinate.latitude] forKey:@"latitude"];
     [self.locationDic setObject:[NSString stringWithFormat:@"%f",location.coordinate.longitude] forKey:@"longitude"];
-//    NSLog(@"location:latitude-%f,longitude-%f",location.coordinate.latitude,location.coordinate.longitude);
+    NSLog(@"location:latitude-%f,longitude-%f",location.coordinate.latitude,location.coordinate.longitude);
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kUserLocationUpdateNotification object:nil];
 }
@@ -203,6 +203,38 @@ static TXLocationManager *locationManager = nil;
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
 {
     return YES;
+}
+
+#pragma mark - helper methods
+- (double)distanceFromLocation:(NSDictionary*)from toLocation:(NSDictionary*)to{
+    //计算用户与标记位置之间的经纬度中间值，以及距离，设定地图自动以其作为中心点显示
+    NSDictionary *userlocation;
+    if (from == nil) {
+        userlocation = [[TXLocationManager sharedManager] getLocationSignalOnce];
+    }else{
+        userlocation = from;
+    }
+//    double centerLati = 0;
+//    if ([[userlocation valueForKey:@"latitude"] doubleValue] > [[to valueForKey:@"latitude"] doubleValue]) {
+//        centerLati = ([[userlocation valueForKey:@"latitude"] doubleValue]-[[to valueForKey:@"latitude"] doubleValue])/2 + [[to valueForKey:@"latitude"] doubleValue];
+//    }else{
+//        centerLati = ([[to valueForKey:@"latitude"] doubleValue]-[[userlocation valueForKey:@"latitude"] doubleValue])/2 + [[userlocation valueForKey:@"latitude"] doubleValue];
+//    }
+//
+//    double centerLong =0 ;
+//    if ([[userlocation valueForKey:@"longitude"] doubleValue] > [[to valueForKey:@"longitude"] doubleValue]) {
+//        centerLong = ([[userlocation valueForKey:@"longitude"] doubleValue]-[[to valueForKey:@"longitude"] doubleValue])/2 + [[to valueForKey:@"longitude"] doubleValue];
+//    }else{
+//        centerLong = ([[to valueForKey:@"longitude"] doubleValue]-[[userlocation valueForKey:@"longitude"] doubleValue])/2 + [[userlocation valueForKey:@"longitude"] doubleValue];
+//    }
+    
+    
+    CLLocation *orig= [[CLLocation alloc] initWithLatitude:[[userlocation valueForKey:@"latitude" ] doubleValue]  longitude:[[userlocation valueForKey:@"longitude" ] doubleValue]];
+    CLLocation* dist= [[CLLocation alloc] initWithLatitude:[[to valueForKey:@"latitude" ] doubleValue] longitude:[[to valueForKey:@"longitude" ] doubleValue]];
+    
+    CLLocationDistance kilometers=[orig distanceFromLocation:dist]/1000;
+    NSLog(@"起点locaiton:%@,终点location:%@,距离%f:",userlocation,to,kilometers);
+    return kilometers;
 }
 
 @end

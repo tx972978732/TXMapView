@@ -81,33 +81,34 @@
         
         
         //计算用户与标记位置之间的经纬度中间值，以及距离，设定地图自动以其作为中心点显示
-        NSDictionary *userlocation = [[TXLocationManager sharedManager] getLocationSignal];
+        NSDictionary *userlocation = [[TXLocationManager sharedManager] getLocationSignalOnce];
+        NSLog(@"userlocation:%@",userlocation);
         double centerLati = 0;
         if ([[userlocation valueForKey:@"latitude"] doubleValue] > [[location valueForKey:@"latitude"] doubleValue]) {
             centerLati = ([[userlocation valueForKey:@"latitude"] doubleValue]-[[location valueForKey:@"latitude"] doubleValue])/2 + [[location valueForKey:@"latitude"] doubleValue];
         }else{
             centerLati = ([[location valueForKey:@"latitude"] doubleValue]-[[userlocation valueForKey:@"latitude"] doubleValue])/2 + [[userlocation valueForKey:@"latitude"] doubleValue];
         }
-        
+
         double centerLong =0 ;
         if ([[userlocation valueForKey:@"longitude"] doubleValue] > [[location valueForKey:@"longitude"] doubleValue]) {
             centerLong = ([[userlocation valueForKey:@"longitude"] doubleValue]-[[location valueForKey:@"longitude"] doubleValue])/2 + [[location valueForKey:@"longitude"] doubleValue];
         }else{
             centerLong = ([[location valueForKey:@"longitude"] doubleValue]-[[userlocation valueForKey:@"longitude"] doubleValue])/2 + [[userlocation valueForKey:@"longitude"] doubleValue];
         }
-        
-        
-        CLLocation *orig= [[CLLocation alloc] initWithLatitude:[[userlocation valueForKey:@"latitude" ] doubleValue]  longitude:[[userlocation valueForKey:@"longitude" ] doubleValue]];
-        CLLocation* dist= [[CLLocation alloc] initWithLatitude:[[location valueForKey:@"latitude" ] doubleValue] longitude:[[userlocation valueForKey:@"longitude" ] doubleValue]];
-        
-        CLLocationDistance kilometers=[orig distanceFromLocation:dist]/1000;
-        NSLog(@"距离%f:",kilometers);
-        
+
+
+//        CLLocation *orig= [[CLLocation alloc] initWithLatitude:[[userlocation valueForKey:@"latitude" ] doubleValue]  longitude:[[userlocation valueForKey:@"longitude" ] doubleValue]];
+//        CLLocation* dist= [[CLLocation alloc] initWithLatitude:[[location valueForKey:@"latitude" ] doubleValue] longitude:[[userlocation valueForKey:@"longitude" ] doubleValue]];
+//
+//        CLLocationDistance kilometers = [orig distanceFromLocation:dist]/1000;
+//        NSLog(@"距离%f:",kilometers);
+        CLLocationDistance kilometers = [[TXLocationManager sharedManager] distanceFromLocation:nil toLocation:location];
         NSInteger distance = 5000;
         if (kilometers<1) {
             distance = 1500;
         }else{
-            distance = (NSInteger)kilometers*1000*3.6;
+            distance = (NSInteger)kilometers*1000*2;
         }
         [self.mapView setRegion:MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2DMake(centerLati, centerLong), distance, distance) animated:YES];
         
